@@ -19,7 +19,7 @@ public class TestUnit extends Unit {
 	//move these to a unit database?				//
 	
 	public TestUnit(Coordinate location, Player owner, MapInfo map) {
-		super(location, owner, map);
+		super(location, owner, map, MovementType.WALK);
 		super.unitId = 0;
 		setBaseMoveRange(BASE_MOVE_RANGE);
 		setBaseSightRange(BASE_SIGHT_RANGE);

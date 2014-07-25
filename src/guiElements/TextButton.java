@@ -23,10 +23,10 @@ public class TextButton extends MouseOverArea implements Button{
     	     
     private TrueTypeFont ttfont;
     private String text;
+    private boolean enabled = true;
     private boolean lastMouseOver = false;
     private StateBasedGame sbg;
     private int stateID;
-    private boolean isEnabled = true;
     private TrueTypeFont biggerFont;
     private Action action;
     private boolean borderEnabled;
@@ -56,6 +56,7 @@ public class TextButton extends MouseOverArea implements Button{
     
     public void setHidden(boolean b){
     	hidden = b;
+    	setAcceptingInput(!b);
     }
     
     public boolean isHidden(){
@@ -63,11 +64,11 @@ public class TextButton extends MouseOverArea implements Button{
     }
  
     public void setEnabled(boolean b) {
-        isEnabled = b;
+        enabled = b;
     }
  
     public boolean isEnabled() {
-        return isEnabled;
+        return enabled;
     }
  
     public void setBorderEnabled(boolean b){
@@ -78,8 +79,8 @@ public class TextButton extends MouseOverArea implements Button{
     	return borderEnabled;
     }
     
-    public void setAction(Action ba){
-    	action = ba;
+    public void setAction(Action a){
+    	action = a;
     }
     
     public Action getAction(){
@@ -123,7 +124,7 @@ public class TextButton extends MouseOverArea implements Button{
         	org.newdawn.slick.Font prevFont = g.getFont();
             g.setFont(ttfont);
             Color standard = g.getColor();
-            if(isEnabled){
+            if(enabled){
                 g.setColor(Color.orange.brighter(.5f));
                 if (isMouseOver()) {
                     g.setFont(biggerFont);
@@ -178,12 +179,14 @@ public class TextButton extends MouseOverArea implements Button{
     public void mouseClicked(int button, int x, int y, int clickCount) {
     	if(hidden)
     		return;
-    	if(isEnabled){
+    	if(enabled){
     		if (isMouseOver() && sbg.getCurrentStateID() == stateID) {
-    			if(report) Logger.logLine(name + " pressed.");
+    			if(report) 
+    				Logger.loudLogLine(name + " pressed.");
                 SoundManager.getManager().playSound(SoundManager.BUTTON_CLICK);
                 renderClick();
-                if(action != null) action.activate();
+                if(action != null)
+                	action.activate();
             }
             super.mouseClicked(button, x, y, clickCount);
     	}

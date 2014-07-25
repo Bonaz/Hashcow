@@ -148,6 +148,23 @@ public class MapInfo implements Serializable{
 	}
 	
 	/**
+	 * Retrieve a Map of adjacent coordinates and tiles
+	 * @param coord - starting coordinate to get adj. Tiles.
+	 * @return a OneToOneMap of Tile, Coordinate pairs
+	 */
+	
+	public OneToOneMap<Tile, Coordinate> getAdjacentTiles(Coordinate coord){
+		OneToOneMap<Tile, Coordinate> tiles = new OneToOneMap<Tile,Coordinate>();
+		
+		tiles.add(getTile(new Coordinate(coord.X() + 1, coord.Y())), new Coordinate(coord.X() + 1, coord.Y()));
+		tiles.add(getTile(new Coordinate(coord.X() - 1, coord.Y())), new Coordinate(coord.X() - 1, coord.Y()));
+		tiles.add(getTile(new Coordinate(coord.X(), coord.Y() + 1)), new Coordinate(coord.X(), coord.Y() + 1));
+		tiles.add(getTile(new Coordinate(coord.X(), coord.Y() - 1)), new Coordinate(coord.X(), coord.Y() - 1));
+		
+		return tiles;
+	}
+	
+	/**
 	 * Select a given location on the map.
 	 * Will first deselect the last location selected before selecting the appropriate layer at the Coordinate given
 	 * @param coord - the Coordinate selected
@@ -245,7 +262,7 @@ public class MapInfo implements Serializable{
 	 * @param coord - the Coordinate of the Building to be retrieved
 	 * @return the Building at coord.X, coord.Y or null if no such building exists
 	 */
-	public Building getBuilding(Coordinate coord){
+	public Building g(Coordinate coord){
 		return buildings.getValue(coord);
 	}
 	

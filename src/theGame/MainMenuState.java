@@ -1,7 +1,6 @@
 package theGame;
 
 
-import gamePieces.MapInfo;
 import guiElements.Menu;
 import guiElements.TextButton;
 
@@ -17,8 +16,8 @@ import actions.ExitGameAction;
 import actions.GenericAction;
 import actions.StateTransitionAction;
 import actions.UnImplementedAction;
+import actions.WrapperAction;
 import resourceManager.FontManager;
-import resourceManager.MapManager;
 import resourceManager.SoundManager;
 import utils.Settings;
 
@@ -87,11 +86,25 @@ public class MainMenuState extends HCGameState {
 		NETWORK_BUTTON = new TextButton(container, buttonFont, "Network",
 				0, 0,
 				game, this.getID(), 
+				new GenericAction(){
+					public void activate(){
+						setDisplayLevel(NETWORK);
+					}
+		});
+		JOIN_BUTTON = new TextButton(container, buttonFont, "Join", 0, 0, game, this.getID(),
 				new UnImplementedAction());
+		HOST_BUTTON = new TextButton(container, buttonFont, "Host", 0, 0, game, this.getID(),
+				new UnImplementedAction());
+		JOIN_BUTTON.setEnabled(false);
+		HOST_BUTTON.setEnabled(false);
 		mainMenu = new Menu(0, 0);
 		newGameMenu = new Menu(0, 0);
-		newGameMenu.center(true);
+		networkMenu = new Menu(0, 0);
 		mainMenu.center(true);
+		newGameMenu.center(true);
+		networkMenu.center(true);
+		newGameMenu.setReporting(true);
+		mainMenu.setReporting(true);
 		mainMenu.addButton(NEW_BUTTON);
 		mainMenu.addButton(LOAD_BUTTON);
 		mainMenu.addButton(SETTINGS_BUTTON);
@@ -99,6 +112,9 @@ public class MainMenuState extends HCGameState {
 		newGameMenu.addButton(LOCAL_BUTTON);
 		newGameMenu.addButton(NETWORK_BUTTON);
 		newGameMenu.addButton(BACK_BUTTON);
+		networkMenu.addButton(JOIN_BUTTON);
+		networkMenu.addButton(HOST_BUTTON);
+		networkMenu.addButton(BACK_BUTTON);
 		setDisplayLevel(MAIN);
 	}
 
@@ -109,6 +125,7 @@ public class MainMenuState extends HCGameState {
 		switch(displayLevel){
 			case MAIN: mainMenu.render(container, g); break;
 			case NEW: newGameMenu.render(container, g); break;
+			case NETWORK: networkMenu.render(container, g); break;
 		}
 	    super.render(container, game, g);
 	}
@@ -116,16 +133,16 @@ public class MainMenuState extends HCGameState {
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
-		if(container.getInput().isKeyPressed(Input.KEY_ESCAPE))
-			container.exit();
-		if(container.getInput().isKeyPressed(Input.KEY_ENTER))
-			game.enterState(2);
+		if(container.getInput().isKeyPressed(Input.KEY_ESCAPE)){
+			if(--displayLevel == 0)
+				container.exit();
+			setDisplayLevel(displayLevel);
+		}
 		super.update(container, game, delta);
 	}
 	
 	@Override
 	public int getID() {
-		// TODO Auto-generated method stub
 		return ID;
 	}
 	
@@ -133,11 +150,13 @@ public class MainMenuState extends HCGameState {
 		switch(displayLevel){
 			case MAIN: mainMenu.hide(); break;
 			case NEW: newGameMenu.hide(); break;
+			case NETWORK: networkMenu.hide(); break;
 		}
 		displayLevel = i;
 		switch(displayLevel){
 			case MAIN: mainMenu.show(); break;
 			case NEW: newGameMenu.show(); break;
+			case NETWORK: networkMenu.show(); break;
 		}
 	}
 	
